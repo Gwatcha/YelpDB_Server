@@ -27,8 +27,10 @@ public class Table {
 	}
 
 	/**
-	 * Adds a record to this table
-	 * @param a record which is of the type that this table.
+	 * Adds a record to this table, if this function returns false, it means the record
+	 * was not added to the table due to an improper record being passed.
+     *
+	 * @param record which is a non empty record of the type that this table holds.
 	 * @return true if the record was successfully added, false if this record
 	 * 		  is either empty or not of the same type of records already in this table.
 	 */
@@ -72,8 +74,8 @@ public class Table {
 	public String toString() {
 		String id = "";
 
-		for (Record field : table) {
-			id = new String(id + "\n" + field.toString());
+		for (Record record : table) {
+			id = new String(id + "\n" + record.toString());
 		}
 
 		return (id);

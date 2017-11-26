@@ -17,6 +17,7 @@ public class Field<T> {
 	}
 
 	public Class<?> getType() {
+
 		return value.getClass();
 	}
 

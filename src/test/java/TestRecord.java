@@ -1,10 +1,8 @@
-package tests;
-
-import static org.junit.Assert.*;
-import org.junit.Test;
-
 import ca.ece.ubc.cpen221.mp5.database.Field;
 import ca.ece.ubc.cpen221.mp5.database.Record;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class TestRecord {
 
@@ -41,7 +39,7 @@ public class TestRecord {
 		
 			
 		//Lastly, print both of them out.
-			
+		System.out.println(gameRecord.toString());
 			
 			
 

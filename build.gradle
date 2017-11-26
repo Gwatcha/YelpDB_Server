@@ -1,5 +1,5 @@
 plugins {
-  id 'com.github.kt3k.coveralls' version '2.6.3'
+    id 'com.github.kt3k.coveralls' version '2.6.3'
 }
 
 apply plugin: 'java'
@@ -16,6 +16,8 @@ repositories {
 dependencies {
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+    compile 'junit:junit:4.12'
+    compile "com.google.code.gson:gson:2.2.4"
 }
 
 test.testLogging {

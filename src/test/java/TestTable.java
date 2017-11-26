@@ -1,11 +1,10 @@
 package tests;
-import static org.junit.Assert.*;
-
-import org.junit.Test;
-
 import ca.ece.ubc.cpen221.mp5.database.Field;
 import ca.ece.ubc.cpen221.mp5.database.Record;
 import ca.ece.ubc.cpen221.mp5.database.Table;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 //Test table tests Table.java as well as Field.java and Record.java
 public class TestTable {
@@ -15,7 +14,7 @@ public class TestTable {
 			double rottenTomatoesRating, double imdbRating, String[] genres, boolean onNetflix) {
 		Record record = new Record("movie");
 		
-		Field<String> field1 = new Field<String>("name", name);
+		Field<String> field1 = new Field<>("name", name);
 		Field<Integer> field2 = new Field<Integer>("year", year);
 		Field<String> field3 = new Field<String>("director", director);
 		Field<Double> field4 = new Field<Double>("rotten tomatoes rating", rottenTomatoesRating);
@@ -31,6 +30,8 @@ public class TestTable {
 		record.addField(field6);
 		record.addField(field7);
 		return record;
+
+
 	}
 
 	@Test
