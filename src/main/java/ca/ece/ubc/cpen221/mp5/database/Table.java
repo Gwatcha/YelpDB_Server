@@ -62,6 +62,11 @@ public class Table {
 		return table.size();
 	}
 
+	// For K-Clusters, makes table immutable... 
+	// Might need to clone table if it causes problems.
+	public ArrayList<Record> getRecords() {
+		return new ArrayList<Record>(table);
+	}
 	/**
 	 * Returns unique hashcode for this table.
 	 */

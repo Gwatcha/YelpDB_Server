@@ -8,15 +8,14 @@ import static org.junit.Assert.*;
 //Checks size for each file and optionally, prints it.
 public class ParseJsonFileTest {
 
-    //TODO Different for your computer Harminderk!
-    String pathToData = "C:\\Users\\Michal\\Documents\\IntelliJ-Workspace\\f17-mp5-harminderk_gwatcha\\data";
-
+	// Fixed path for both
+    String pathToData = "data";
     @Test
     public void testRestaurants() throws Exception {
 
         ParseJsonFile parser;
         parser= new ParseJsonFile(
-                pathToData + "\\restaurants.json"
+                pathToData + "/restaurants.json"
                 , Restaurant.class);
 
         Table table = parser.makeTable();
@@ -30,7 +29,7 @@ public class ParseJsonFileTest {
 
         ParseJsonFile parser;
         parser= new ParseJsonFile(
-                pathToData + "\\reviews.json"
+                pathToData + "/reviews.json"
                 , Review.class);
 
         Table table = parser.makeTable();
@@ -44,7 +43,7 @@ public class ParseJsonFileTest {
 
         ParseJsonFile parser;
         parser= new ParseJsonFile(
-                pathToData + "\\users.json"
+                pathToData + "/users.json"
                 , User.class);
 
         Table table = parser.makeTable();
