@@ -13,9 +13,8 @@ YelpDB methods:
     
     /**
     * Constructor
-    *
+    * YelpDB(String restaurantsFile, String reviewsFile, String usersFile);
     */
- YelpDB(String restaurantsFile, String reviewsFile, String usersFile);
 
     /**
      * Perform a structured query and return the set of objects that matches the
