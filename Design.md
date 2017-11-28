@@ -11,7 +11,10 @@ Bring a printout with key details (as indicated above). Ideally, you should ensu
 
 YelpDB methods:
     
- Constructor:
+    /**
+    * Constructor
+    *
+    */
  YelpDB(String restaurantsFile, String reviewsFile, String usersFile);
 
     /**
