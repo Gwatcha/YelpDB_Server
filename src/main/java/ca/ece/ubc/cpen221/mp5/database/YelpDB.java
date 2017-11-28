@@ -15,6 +15,7 @@ public class YelpDB<T> implements MP5Db<T> {
 
 	ArrayList<Table> dataBase;
 
+	
 	public YelpDB(String restaurantsFile, String reviewsFile, String usersFile) throws FileNotFoundException {
 		dataBase = new ArrayList<>();
 
@@ -75,14 +76,13 @@ public class YelpDB<T> implements MP5Db<T> {
 		// query += "\"" + s + "\"";
 		//
 		// query += "], \"latitude\": " + r.getLatitude() + ", \"price\": " +
-		// r.getPrice() + "}";
+		// r.getPrice() + "}, ";
 		// }
-		//
-		// if(i < list.size() + 1)
-		// query += ", ";
-		//
 		// str += query;
 		// }
+		// str = str.substring(0, str.length() - 2);
+		// str += "]";
+		//
 
 		for (int i = 0; i < list.size(); i++) {
 			query = "";
@@ -103,6 +103,15 @@ public class YelpDB<T> implements MP5Db<T> {
 		return str;
 
 	}
+
+
+	@Override
+	public ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	// ~~~~~~~~~~~~ Helper Methods ~~~~~~~~~~~~ \\
 
 	// Helper method for kMeansClusters_json
 	private List<Set<Restaurant>> kMeansClustering(int k) {
@@ -137,39 +146,12 @@ public class YelpDB<T> implements MP5Db<T> {
 		// Does the clustering magic
 		recursiveKclusters(list, locations, restaurants, true);
 
-		// // Creates clusters from the initial starting points
-		// for (int i = 0; i < restaurants.size(); i++) {
-		// smallestDistance = Double.MAX_VALUE;
-		//
-		// for (int j = 0; j < k; j++) {
-		// distance = distanceBetweenRestaurants(restaurants.get(i).getLatitude(),
-		// restaurants.get(i).getLongitude(), locations.get(j).get(0),
-		// locations.get(j).get(1));
-		// if (distance < smallestDistance) {
-		// smallestDistance = distance;
-		// locationIndex = j;
-		// restaurant_index = i;
-		// }
-		// }
-		//
-		// // Adds restaurants to the list
-		// set = list.get(locationIndex);
-		// set.add(restaurants.get(restaurant_index));
-		// list.set(locationIndex, set);
-		//
-		// }
-
 		return new LinkedList<Set<Restaurant>>(list);
 	}
 
-	@Override
-	public ToDoubleBiFunction<MP5Db<T>, String> getPredictorFunction(String user) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
-	// ~~~~~~~~~~~~ Helper Methods ~~~~~~~~~~~~ \\
-
+	
 	private void recursiveKclusters(List<Set<Restaurant>> list, List<List<Double>> locations,
 			List<Restaurant> restaurants, boolean changed) {
 
@@ -181,7 +163,6 @@ public class YelpDB<T> implements MP5Db<T> {
 			double SumLong;
 			double SumLat;
 			boolean didChange = false;
-			List<Set<Restaurant>> listy = new LinkedList<Set<Restaurant>>();
 
 			// Creates clusters from the initial starting points
 			for (int i = 0; i < restaurants.size(); i++) {
@@ -244,6 +225,13 @@ public class YelpDB<T> implements MP5Db<T> {
 
 	}
 
+	/**
+	 * Get a list of all the restaurants in the Database.
+	 * 
+	 * @param records
+	 * 			List of JSON lines, that represent the Restaurant class
+	 * @return List of Restaurant objects.
+	 */
 	private List<Restaurant> getRestaurants(List<Record> records) {
 		List<Restaurant> list = new LinkedList<Restaurant>();
 		Restaurant res;
@@ -303,7 +291,6 @@ public class YelpDB<T> implements MP5Db<T> {
 
 				if (records.get(i).getFieldAt(j).getTypeName().equals("price"))
 					res.setPrice((Integer) records.get(i).getFieldAt(j).getValue());
-
 			}
 
 			list.add(res);
