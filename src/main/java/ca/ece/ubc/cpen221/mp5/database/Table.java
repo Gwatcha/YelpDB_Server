@@ -63,6 +63,15 @@ public class Table {
 	}
 
 	/**
+	 * Returns all the records in this table
+	 * @return 
+	 * 			a list of all the records in this table
+	 */
+	public ArrayList<Record> getRecords() {
+		return new ArrayList<Record>(table);
+	}
+	
+	/**
 	 * Returns unique hashcode for this table.
 	 */
 	@Override
