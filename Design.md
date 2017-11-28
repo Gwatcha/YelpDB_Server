@@ -11,8 +11,10 @@ Bring a printout with key details (as indicated above). Ideally, you should ensu
 
 YelpDB methods:
     
- Constructor:
- YelpDB(String restaurantsFile, String reviewsFile, String usersFile);
+    /**
+    * Constructor
+    * YelpDB(String restaurantsFile, String reviewsFile, String usersFile);
+    */
 
     /**
      * Perform a structured query and return the set of objects that matches the
