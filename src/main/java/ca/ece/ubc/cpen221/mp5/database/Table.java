@@ -1,6 +1,8 @@
 package ca.ece.ubc.cpen221.mp5.database;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A table is a collection of records of the same type.
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 public class Table {
 
 	private String name;
-	private ArrayList<Record> table;
+	private List<Record> table;
 
 	/**
 	 * Creates an empty record with label 'name'.
@@ -23,7 +25,7 @@ public class Table {
 	 */
 	public Table(String name) {
 		this.name = name;
-		this.table = new ArrayList<Record>();
+		this.table =Collections.synchronizedList((new ArrayList<Record>()));
 	}
 
 	/**

@@ -1,6 +1,8 @@
 package ca.ece.ubc.cpen221.mp5.database;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A record is one line in a .json file.
@@ -14,7 +16,7 @@ import java.util.ArrayList;
 public class Record {
 
 	private String name;
-	private ArrayList<Field<?>> record;
+	private List<Field<?>> record;
 
 	/**
 	 * Creates an empty record with label 'name'.
@@ -22,7 +24,7 @@ public class Record {
 	 */
 	public Record(String name) {
 		this.name = name;
-		this.record = new ArrayList<Field<?>>();
+		this.record = Collections.synchronizedList(new ArrayList<Field<?>>());
 	}
 
 	/**
