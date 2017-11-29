@@ -1,4 +1,4 @@
-package ca.ece.ubc.cpen221.mp5.database;
+package ca.ece.ubc.cpen221.mp5;
 
 /*
  * *Fields are the basic units in a DB, as an example

@@ -1,5 +1,5 @@
 
-package ca.ece.ubc.cpen221.mp5.database;
+package ca.ece.ubc.cpen221.mp5;
 
 import java.io.FileNotFoundException;
 import java.util.*;
