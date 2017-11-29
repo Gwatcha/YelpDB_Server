@@ -2,23 +2,18 @@
 package ca.ece.ubc.cpen221.mp5.database;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.ToDoubleBiFunction;
-
 import RecordClasses.*;
 import RecordClasses.Review.RestaurantVotes;
 import RecordClasses.User.UserVotes;
 
 public class YelpDB implements MP5Db<Restaurant> {
 
-	ArrayList<Table> dataBase;
+	List<Table> dataBase;
 
 	public YelpDB(String restaurantsFile, String reviewsFile, String usersFile) throws FileNotFoundException {
-		dataBase = new ArrayList<>();
+		dataBase = Collections.synchronizedList(new ArrayList<Table>());
 
 		// Initialize parsers.
 		ParseJsonFile restaurantsParser = new ParseJsonFile(restaurantsFile, Restaurant.class);
