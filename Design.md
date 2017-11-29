@@ -119,6 +119,7 @@ Table Class:
 	public class Table
 	
 Table Class Methods:
+
 	/**
 	 * Adds a record to this table, if this function returns false, it means the record
 	 * was not added to the table due to an improper record being passed.
