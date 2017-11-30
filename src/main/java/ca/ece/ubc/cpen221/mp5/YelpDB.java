@@ -211,7 +211,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 			a = mean_y - (b * mean_x);
 			r_squared = (sumXY * sumXY) / (sumXX * sumYY);
 		} else {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("sumXX == 0");
 
 		}
 
@@ -226,7 +226,12 @@ public class YelpDB implements MP5Db<Restaurant> {
 			// Should return the prediction
 			for (Restaurant res : set) {
 
-				return (aa * res.getPrice()) + bb;
+				if (((aa * res.getPrice() + bb) > 5.0))
+					return 5.0;
+				else if ((aa * res.getPrice() + bb) < 0.0)
+					return 0.0;
+				else
+					return (aa * res.getPrice() + bb);
 			}
 			// Throw error since there were no matches for the String y
 			throw new IllegalArgumentException();
@@ -238,12 +243,12 @@ public class YelpDB implements MP5Db<Restaurant> {
 	// ~~~~~~~~~~~~ Helper Methods ~~~~~~~~~~~~ \\
 
 	/**
-	 *  Helper method for kMeansClusters_json
+	 * Helper method for kMeansClusters_json
+	 * 
 	 * @param k
-	 * 			is the number of clusters to form
-	 * @return
-	 * 			a list of sets of restaurants, where each set in the list is
-	 * 			a cluster
+	 *            is the number of clusters to form
+	 * @return a list of sets of restaurants, where each set in the list is a
+	 *         cluster
 	 */
 	private List<Set<Restaurant>> kMeansClustering(int k) {
 
@@ -281,17 +286,17 @@ public class YelpDB implements MP5Db<Restaurant> {
 	}
 
 	/**
-	 * Helper method to perform recursion to keep doing the clustering
-	 * to the point where no changes occur in the clusters
+	 * Helper method to perform recursion to keep doing the clustering to the point
+	 * where no changes occur in the clusters
 	 * 
 	 * @param list
-	 * 			contains the clusters
+	 *            contains the clusters
 	 * @param locations
-	 * 			average latitude and longitude for each cluster
+	 *            average latitude and longitude for each cluster
 	 * @param restaurants
-	 * 			is the list containing all the restaurants
+	 *            is the list containing all the restaurants
 	 * @param changed
-	 * 			is a boolean to trigger the recursion
+	 *            is a boolean to trigger the recursion
 	 * 
 	 * @modifies the parameters list, locations, and changed
 	 */
@@ -407,7 +412,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the Restaurant class
 	 * @return List of Restaurant objects.
 	 */
-	private List<Review> getReviews(List<Record> records) {
+	public static List<Review> getReviews(List<Record> records) {
 		List<Review> list = new LinkedList<Review>();
 		Review review;
 		// Get indexes
