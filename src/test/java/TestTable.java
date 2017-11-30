@@ -1,7 +1,6 @@
-package tests;
-import ca.ece.ubc.cpen221.mp5.database.Field;
-import ca.ece.ubc.cpen221.mp5.database.Record;
-import ca.ece.ubc.cpen221.mp5.database.Table;
+import ca.ece.ubc.cpen221.mp5.Field;
+import ca.ece.ubc.cpen221.mp5.Record;
+import ca.ece.ubc.cpen221.mp5.Table;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

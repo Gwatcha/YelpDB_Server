@@ -26,6 +26,16 @@ public class YelpDB implements MP5Db<Restaurant> {
 		dataBase.add(usersParser.makeTable());
 	}
 
+    /** Returns a list of Records of type T which contain a field equal to the
+     * one specified.
+     * @param fieldToMatch
+     * @param <T>
+     * @return
+     */
+	public <T> List<T> getRecordMatches(Field<?> fieldToMatch) {
+        return null;
+    }
+
 	// ~~~~~~~~~~~~Interface methods~~~~~~~~~~~~~~~ \\
 
 	@Override

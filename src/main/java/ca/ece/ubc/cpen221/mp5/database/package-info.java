@@ -1,8 +1,0 @@
-/**
- * 
- */
-/**
- * @author Michal
- *
- */
-package database;

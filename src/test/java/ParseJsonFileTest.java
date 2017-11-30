@@ -1,6 +1,6 @@
 import RecordClasses.*;
-import ca.ece.ubc.cpen221.mp5.database.ParseJsonFile;
-import ca.ece.ubc.cpen221.mp5.database.Table;
+import ca.ece.ubc.cpen221.mp5.ParseJsonFile;
+import ca.ece.ubc.cpen221.mp5.Table;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

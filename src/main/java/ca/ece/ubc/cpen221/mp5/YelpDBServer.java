@@ -1,6 +1,6 @@
 package ca.ece.ubc.cpen221.mp5;
 
-import ca.ece.ubc.cpen221.mp5.database.YelpDB;
+import ca.ece.ubc.cpen221.mp5.YelpDB;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -17,7 +17,8 @@ public class YelpDBServer {
     //Connections from multiple clients on port DEFAULT_PORT.
     public static void main(String args[]) {
         try {
-            YelpDBServer server = new YelpDBServer(DEFAULT_PORT);
+           // int port = Integer.parseInt(args[0]);
+            YelpDBServer server = new YelpDBServer(4949);
             server.serve();
         } catch (IOException e) {
             e.printStackTrace();
@@ -33,9 +34,11 @@ public class YelpDBServer {
      */
     public YelpDBServer(int port) throws IOException {
         serverSocket = new ServerSocket(port);
-        String restaurantsFile = "data/restaurants.json";
-        String reviewsFile = "data/reviews.json";
-        String usersFile = "data/users.json";
+
+        String restaurantsFile = ("data/restaurants.json");
+        String reviewsFile = ("data/reviews.json");
+        String usersFile = ("data/users.json");
+
         this.yelpDB = new YelpDB(restaurantsFile,  reviewsFile,  usersFile);
     }
 

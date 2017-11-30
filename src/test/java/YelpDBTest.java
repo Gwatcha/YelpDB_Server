@@ -1,5 +1,5 @@
 import RecordClasses.*;
-import ca.ece.ubc.cpen221.mp5.database.*;
+import ca.ece.ubc.cpen221.mp5.YelpDB;
 
 import org.junit.Test;
 
