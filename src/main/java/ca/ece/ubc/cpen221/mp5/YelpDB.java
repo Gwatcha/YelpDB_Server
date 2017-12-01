@@ -115,7 +115,9 @@ public class YelpDB implements MP5Db<Restaurant> {
 		return str;
 
 	}
-
+	/**
+	 * @throws IllegalException for invalid inputs, see StackTrace for the specifics
+	 */
 	@Override
 	public ToDoubleBiFunction<MP5Db<Restaurant>, String> getPredictorFunction(String user) {
 
@@ -163,7 +165,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 
 		List<Restaurant> ReviewedRestaurants = getRestaurants(theUserRestaurantReviewRecords);
 
-		// MATH STUFF
+		// ~~~~~~~~~~~~ MATH STUFF  ~~~~~~~~~~~~ \\
 
 		Double mean_y = 0.0, mean_x = 0.0;
 		Integer xi = 0;
@@ -234,7 +236,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 					return (aa * res.getPrice() + bb);
 			}
 			// Throw error since there were no matches for the String y
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("No Restaurant Found in Database for: " + y);
 		};
 
 		return func;
@@ -365,7 +367,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 				// elements
 				if (splitLargest) {
 
-					for (int j = 0; j < list.get(indexOfLargest).size() / 2; j++) {
+					for (int j = 0; j < Math.round((list.get(indexOfLargest).size() + 0.5) / 2); j++) {
 						list.get(indexOfZero).add((Restaurant) list.get(indexOfLargest).toArray()[j]);
 						list.get(indexOfLargest).remove((Restaurant) list.get(indexOfLargest).toArray()[j]);
 					}
@@ -534,6 +536,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the User class
 	 * @return List of User objects.
 	 */
+	/*// Comment out If needed
 	private List<User> getUsers(List<Record> records) {
 		List<User> list = new LinkedList<User>();
 		User user;
@@ -570,7 +573,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 
 		return new LinkedList<User>(list);
 	}
-
+*/
 	// Helper method to do the pythagorean theorem
 	private double distanceBetweenRestaurants(Double x1, Double y1, Double x2, Double y2) {
 		double newX = x1 - x2;

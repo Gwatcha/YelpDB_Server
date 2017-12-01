@@ -2,7 +2,9 @@ import RecordClasses.*;
 import ca.ece.ubc.cpen221.mp5.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,7 +17,7 @@ import java.util.function.ToDoubleBiFunction;
 import org.junit.Test;
 
 public class YelpDBTest {
-
+	// First two tests force the %100 code coverage for YelpDB
 	@Test
 	public void test() throws Exception {
 		// Fixed path for both
@@ -54,23 +56,44 @@ public class YelpDBTest {
 				UserReviewsCount.put(rev.getUser_id(), UserReviewsCount.get(rev.getUser_id()) + 1);
 		}
 		List<String> withMoreThanOne = new LinkedList<String>();
-
 		for (Entry<String, Integer> entry : UserReviewsCount.entrySet()) {
 			if (entry.getValue() > 1) {
 				withMoreThanOne.add(entry.getKey());
 			}
 		}
 		System.out.println(withMoreThanOne.size());
-		
+
 		ToDoubleBiFunction<MP5Db<Restaurant>, String> func;
-		for(int i = 0; i < withMoreThanOne.size(); i++) {
-		try {
-		func = yelp.getPredictorFunction(withMoreThanOne.get(i));
-		System.out.println(func.applyAsDouble(yelp, "q33FT8iYvU2UUbJuiEQWUw"));
-		}catch (Exception e) {
-		}
+		
+		for (int i = 0; i < 53; i++) {
+			try {
+				func = yelp.getPredictorFunction(withMoreThanOne.get(i));
+				func.applyAsDouble(yelp, "q33FT8iYvU2UUbJuiEQWUw");
+			} catch (Exception e) {
+			}
 		}
 
+		try {
+			func = yelp.getPredictorFunction(withMoreThanOne.get(4));
+			func.applyAsDouble(yelp, "RANDOM_ID");
+			fail();
+		} catch (Exception e) {
+		}
+
+	}
+	
+	// Testing the split cluster functionality
+	@Test
+	public void test1() throws Exception {
+		// Fixed path for both
+		String restaurantsFile = "data/Test1.json";
+		String reviewsFile = "data/reviews.json";
+		String usersFile = "data/users.json";
+		YelpDB yelp = new YelpDB(restaurantsFile, reviewsFile, usersFile);
+		
+		yelp.kMeansClusters_json(3);
+		
+		
 	}
 
 }
