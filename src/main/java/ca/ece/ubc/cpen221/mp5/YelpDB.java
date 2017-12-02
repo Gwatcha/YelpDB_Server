@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.ToDoubleBiFunction;
 import RecordClasses.*;
 import RecordClasses.Review.RestaurantVotes;
-import RecordClasses.User.UserVotes;
+// import RecordClasses.User.UserVotes; // Comment out if using the getUsers method
 
 public class YelpDB implements MP5Db<Restaurant> {
 
@@ -172,7 +172,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 		Double sumXX = 0.0, sumYY = 0.0, sumXY = 0.0;
 		Double b = null;
 		Double a = null;
-		Double r_squared;
+//		Double r_squared;  // Comment out if r_squared is needed
 
 		// Gets the sum of y and sum of x
 		for (Review r : theUserReviews) {
@@ -211,7 +211,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 		if (sumXX != 0) {
 			b = sumXY / sumXX;
 			a = mean_y - (b * mean_x);
-			r_squared = (sumXY * sumXY) / (sumXX * sumYY);
+		//	r_squared = (sumXY * sumXY) / (sumXX * sumYY); // Comment out if r_squared is needed
 		} else {
 			throw new IllegalArgumentException("sumXX == 0");
 
@@ -228,12 +228,12 @@ public class YelpDB implements MP5Db<Restaurant> {
 			// Should return the prediction
 			for (Restaurant res : set) {
 
-				if (((aa * res.getPrice() + bb) > 5.0))
+				if ((((aa * res.getPrice()) + bb) > 5.0))
 					return 5.0;
-				else if ((aa * res.getPrice() + bb) < 1.0)
+				else if (((aa * res.getPrice()) + bb) < 1.0)
 					return 1.0;
 				else
-					return (aa * res.getPrice() + bb);
+					return ((aa * res.getPrice()) + bb);
 			}
 			// Throw error since there were no matches for the String y
 			throw new IllegalArgumentException("No Restaurant Found in Database for: " + y);
