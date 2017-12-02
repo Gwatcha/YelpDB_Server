@@ -8,6 +8,7 @@ import RecordClasses.*;
 import RecordClasses.Review.RestaurantVotes;
 import RecordClasses.User.UserVotes;
 
+
 public class YelpDB implements MP5Db<Restaurant> {
 
 	List<Table> dataBase;
@@ -36,24 +37,6 @@ public class YelpDB implements MP5Db<Restaurant> {
         return null;
     }
 
-	/**
-	 * Returns a reference to the one of the tables in the database.
-	 * 
-	 * @param fileName
-	 * 				is the name of one of the Tables in the database.
-	 * @return
-	 * 			a reference to the Table in database.
-	 * @throws IllegalArgumentException
-	 * 				if no such table that has the same name as the fileName exists.
-	 */
-	public Table getTableOf(String fileName) {
-		for(Table t: dataBase) {
-			if(t.getName().equals(fileName))
-				return t;
-		}
-		throw new IllegalArgumentException("No Such Table in the database");
-		
-	}
 	// ~~~~~~~~~~~~Interface methods~~~~~~~~~~~~~~~ \\
 
 	@Override
@@ -267,6 +250,29 @@ public class YelpDB implements MP5Db<Restaurant> {
 
 	/**
 	 *  Helper method for kMeansClusters_json
+	 * Returns a reference to the one of the tables in the database.
+	 * 
+	 * @param fileName
+	 * 				is the name of one of the Tables in the database.
+	 * @return
+	 * 			a reference to the Table in database.
+	 * @throws IllegalArgumentException
+	 * 				if no such table that has the same name as the fileName exists.
+	 */
+	public Table getTableOf(String fileName) {
+		for(Table t: dataBase) {
+			if(t.getName().equals(fileName))
+				return t;
+		}
+		throw new IllegalArgumentException("No Such Table in the database");
+		
+	}
+	
+	
+	
+	/**
+	 * Helper method for kMeansClusters_json
+	 * 
 	 * @param k
 	 * 			is the number of clusters to form
 	 * @return
@@ -557,6 +563,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the User class
 	 * @return List of User objects.
 	 */
+
 	public static List<User> getUsers(List<Record> records) {
 		List<User> list = new LinkedList<User>();
 		User user;
