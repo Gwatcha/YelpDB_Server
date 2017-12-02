@@ -15,8 +15,8 @@ import java.util.List;
  */
 public class Record {
 
-	private String name;
-	private List<Field<?>> record;
+	private final String name;
+	private final List<Field<?>> record;
 
 	/**
 	 * Creates an empty record with label 'name'.
@@ -37,20 +37,25 @@ public class Record {
 
 		Boolean replacedAlready = false;
 
-		for (Field<?> existantField : record) {
-			if (existantField.sameTypeAs(field)) {
-				int i = record.indexOf(existantField);
-				record.add(i, field);
-				// The existing one got shifted right by add.
-				record.remove(i + 1);
-				replacedAlready = true;
-				break;
-			}
-		}
+		//Check if a field of this type already exists in this record, if so, replace.
+        //Synchronized across all threads.
+        synchronized (record) {
+            for (Field<?> existantField : record) {
+                if (existantField.sameTypeAs(field)) {
+                    int i = record.indexOf(existantField);
+                    record.add(i, field);
+                    // The existing one got shifted right by add.
+                    record.remove(i + 1);
+                    replacedAlready = true;
+                    break;
+                }
+            }
 
-		if (!replacedAlready) {
-			record.add(field);
-		}
+            if (!replacedAlready) {
+                record.add(field);
+            }
+
+        }
 	}
 
 	/**
@@ -91,11 +96,13 @@ public class Record {
 	public boolean sameTypeAs(Record record2) {
 
 		if (record.size() == record2.getSize() && record2.getSize() > 0) {
-			for (int i = 0; i < record.size(); i++) {
-				if (!this.getFieldAt(i).sameTypeAs(record2.getFieldAt(i))) {
-					return false;
-				}
-			}
+		    synchronized (record) {
+                for (int i = 0; i < record.size(); i++) {
+                    if (!this.getFieldAt(i).sameTypeAs(record2.getFieldAt(i))) {
+                        return false;
+                    }
+                }
+            }
 			return true;
 		}
 		return false;
@@ -106,10 +113,11 @@ public class Record {
 	public String toString() {
 		String id = "";
 
-		for (Field<?> field : record) {
-			id = new String(id + field.toString() + ", ");
-		}
-
+		synchronized (record) {
+            for (Field<?> field : record) {
+                id = new String(id + field.toString() + ", ");
+            }
+        }
 		return ("{" + id.substring(0, id.length() - 2) + "}");
 	}
 

@@ -37,7 +37,8 @@ public class TestTable {
 	public void testTable() {
 		Table table = new Table("movietable");
 		Record movieRecord1 = TestTable.generateMovieRecord
-			("Eternal Sunshine of the Spotless Mind", 2004, "Michel Gondry", .93, 8.3, new String[] {"Science fiction film", "Drama"}, false);
+			("Eternal Sunshine of the Spotless Mind", 2004, "Michel Gondry", .93,
+                    8.3, new String[] {"Science fiction film", "Drama"}, false);
 			assertTrue(table.addRecord(movieRecord1));
 			assertEquals(1, table.getSize());
 			assertTrue(table.getName().equals("movietable"));
@@ -51,26 +52,26 @@ public class TestTable {
 			table.addRecord(bookRecord);
 			assertTrue(!table.addRecord(bookRecord));
 			assertEquals(1, table.getSize());
-		//	System.out.println(table.toString());
+			//System.out.println(table.toString());
 			
 		//Add some more movies.	
 		Record movieRecord2 = TestTable.generateMovieRecord
 				("The Mirror", 1975, "Andrei Tarkovsky", 1.00, 8.2, new String[] {"Drama", "Biography"}, false);
 				assertTrue(table.addRecord(movieRecord2));	
 				assertEquals(2, table.getSize());
-	    //		System.out.println(table.toString());	
+	    	//	System.out.println(table.toString());
 	    		
 	    Record movieRecord3 = TestTable.generateMovieRecord
 	    		("Stalker", 1979, "Andrei Tarkovsky", 1.00, 8.1, new String[] {"Fantasy", "Mystery"}, false);
 	    		assertTrue(table.addRecord(movieRecord3));	
 	    		assertEquals(3, table.getSize());
-	   // 	    System.out.println(table.toString());		
+	    	   // System.out.println(table.toString());
 	    	    
 	    Record movieRecord4 = TestTable.generateMovieRecord
 	    	    ("Mulholland Drive", 2001, "David Lynch", -1, 8.0, new String[] {"Crime film", "Mystery"}, false);
 	    	    assertTrue(table.addRecord(movieRecord4));	
 	    	    assertEquals(4, table.getSize());
-	    //	    	  System.out.println(table.toString());	    
+	    	    //	  System.out.println(table.toString());
 	    	    	  
 	    Record movieRecord5 = TestTable.generateMovieRecord
 	    		("Apocalypse Now", 1979 , "Francis Ford Coppola", .98, 8.5, new String[] {"Drama", "Adventure"}, false);

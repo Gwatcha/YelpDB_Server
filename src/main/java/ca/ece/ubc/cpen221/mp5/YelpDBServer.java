@@ -17,6 +17,7 @@ public class YelpDBServer {
     //Connections from multiple clients on port DEFAULT_PORT.
     public static void main(String args[]) {
         try {
+            //TODO: using cmd still dosen't work! :(
            // int port = Integer.parseInt(args[0]);
             YelpDBServer server = new YelpDBServer(4949);
             server.serve();

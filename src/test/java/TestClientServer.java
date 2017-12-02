@@ -10,10 +10,13 @@ public class TestClientServer {
     public void testConnection() {
         try {
             Client client = new Client("localhost", 4949);
-            client.sendRequest("ping");
-            assertEquals("I'm alive!", client.getReply());
+            client.sendRequest("PING");
+            assertEquals("ALIVE", client.getReply());
 
             client.sendRequest("hack database; override admin priveleges;");
+            assertEquals("ERR: ILLEGAL_REQUEST", client.getReply());
+
+            client.sendRequest("username: root");
             assertEquals("ERR: ILLEGAL_REQUEST", client.getReply());
 
             client.close();
@@ -23,7 +26,7 @@ public class TestClientServer {
     }
 
 
-    @Test  //TODO Doesn't work yet, only supported client request is "ping".
+    @Test
     public void testGetRestaurant() {
         try {
             Client client = new Client("localhost", 4949);
@@ -43,6 +46,7 @@ public class TestClientServer {
             //Try getting non existant restaurant.
             client.sendRequest("RESTAURANT Tim Hortons");
             response = client.getReply();
+            assertEquals("ERR: ILLEGAL_REQUEST", response);
 
             client.close();
         } catch (IOException ioe) {

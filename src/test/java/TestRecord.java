@@ -30,11 +30,11 @@ public class TestRecord {
 			assertEquals(2, gameRecord.getSize());
 			assertEquals(null, gameRecord.getFieldAt(2));
 			
-		//Check .getType and adding new field.
+		//Check .getTypeClass and adding new field.
 		gameRecord.addField(new Field<Integer>("hours played", 419));	
 			assertEquals(3, gameRecord.getSize());
-			assertEquals(Integer.class, gameRecord.getFieldAt(2).getType());
-			assertEquals(String.class, gameRecord.getFieldAt(1).getType());
+			assertEquals(Integer.class, gameRecord.getFieldAt(2).getTypeClass());
+			assertEquals(String.class, gameRecord.getFieldAt(1).getTypeClass());
 			assertFalse(gameRecord.sameTypeAs(bookRecord));
 		
 			

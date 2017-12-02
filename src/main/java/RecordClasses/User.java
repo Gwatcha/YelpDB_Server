@@ -93,5 +93,16 @@ public class User {
         public void setCool(Integer cool) {
             this.cool = cool;
         }
+
+        @Override
+        public String toString() {
+            if (funny != null && useful != null && cool != null) {
+                return ("{"+ "\"funny:\": " + funny + ", \"useful\": " + useful +  ", "
+                        + "\"cool\": " + cool + "}");
+            }
+            else {
+                return null;
+            }
+        }
     }
 }

@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import com.google.gson.Gson;
@@ -87,38 +86,37 @@ public class ConnectionHandler implements Runnable {
 	 */
 	private String executeRequest(String request) throws Exception {
 		// Response is assumed to be empty in case this command
-		// Does not elicit a respons.
+		// Does not elicit a response.
 		String response = "";
 		String command = "";
 		String details = "";
 
 		// Split the request into the command and details.
 		String[] arr = request.split(" ");
+
 		// Splitting the Request String
-		if (arr.length >= 2) {
-			command = arr[0]; // Can change it to .toUpperCase but i think it should count as invalid command
-			for (int i = 1; i < arr.length; i++) {
-				details += arr[i];
-			}
+		if (arr.length >= 1) {
+			command = arr[0];
+			if (arr.length >= 2) {
+                for (int i = 1; i < arr.length; i++) {
+                    details += arr[i];
+                }
+            }
 		} else
 			return "ERR: ILLEGAL_REQUEST";
 
 		switch (command) {
 		case "GETRESTAURANT": {
 			
-			// Get all the restaurants matching the id
-			Set<Restaurant> matches = database.getMatches(details);
-			// Check to see if something was found
-			if (matches.size() == 0) {
-				return "ERR: NO_SUCH_RESTAURANT";
-			} else {
-				for (Restaurant res : matches) {
-					// An extra check
-					if (res.getBusiness_id().equals(details)) {
-						return res.getName();
-					}
-				}
-			}
+			// Get all the restaurants matching the id.
+            Field<String> idField = new Field<>("business_id", details);
+			List<Record> matches = database.getRecordMatches("restaurants", idField);
+
+			//Make sure rep invariant holds. (Id is unique).
+			assert(matches.size() == 1);
+
+			//Return json of this restaurant.
+			return (matches.get(0).toString());
 		}
 		case "ADDUSER": {
 			String name = "", user_id = "";
@@ -227,7 +225,7 @@ public class ConnectionHandler implements Runnable {
 					+ "\"categories\": [" + categories + "], \"state\": \""+ resta.getState() + "\", "
 					+ "\"type\": \""+ resta.getType() +"\", \"stars\": "+ resta.getStars() + ", \"city\": \""
 					+ resta.getCity() +"\", \"full_address\": \""+ resta.getFull_address() +"\", "
-					+ "\"review_count\": 9, \"photo_url\": \""+ resta.getPhoto_url() +"\", "
+					+ "\"review_count\": " + resta.getReview_count() + ", " + "\"photo_url\": \""+ resta.getPhoto_url() +"\", "
 					+ "\"schools\": ["+ schools  +"], \"latitude\": "+ resta.getLatitude() 
 					+", \"price\": " + resta.getPrice() + "}";
 			
@@ -239,11 +237,14 @@ public class ConnectionHandler implements Runnable {
 
 		}
 		case "ADDREVIEW": {
+
+
+
 			return response;
 
 		}
 		case "PING": {
-			response = "I'm alive!";
+			response = "ALIVE";
 			return response;
 		}
 		default:

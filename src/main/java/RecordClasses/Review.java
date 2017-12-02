@@ -102,5 +102,16 @@ public class Review {
         public void setFunny(Integer funny) {
             this.funny = funny;
         }
+
+        @Override
+        public String toString() {
+            if (funny != null && useful != null && cool != null) {
+                return ("{"+ "\"cool:\": " + cool + ", \"useful\": " + useful +  ", "
+                        + "\"funny\": " + funny + "}");
+            }
+            else {
+                return null;
+            }
+        }
     }
 }
