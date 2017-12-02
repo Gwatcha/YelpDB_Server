@@ -1,23 +1,23 @@
 package RecordClasses;
 
 public class Restaurant {
-    Boolean open;
-    String url;
-    Double longitude;
-    String[] neighborhoods;
-    String name;
-    String business_id;
-    String[] categories;
-    String state;
-    String type;
-    Double stars;
-    String city;
-    String full_address;
-    Integer review_count;
-    String photo_url;
-    String[] schools;
-    Double latitude;
-    Integer price;
+    private Boolean open;
+    private String url;
+    private Double longitude;
+    private String[] neighborhoods;
+    private String name;
+    private String business_id;
+    private String[] categories;
+    private String state;
+    private String type;
+    private Double stars;
+    private String city;
+    private String full_address;
+    private Integer review_count;
+    private String photo_url;
+    private String[] schools;
+    private Double latitude;
+    private Integer price;
 
     public Boolean getOpen() {
         return open;
