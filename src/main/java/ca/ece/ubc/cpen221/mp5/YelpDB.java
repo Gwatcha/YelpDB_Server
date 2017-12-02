@@ -230,8 +230,8 @@ public class YelpDB implements MP5Db<Restaurant> {
 
 				if (((aa * res.getPrice() + bb) > 5.0))
 					return 5.0;
-				else if ((aa * res.getPrice() + bb) < 0.0)
-					return 0.0;
+				else if ((aa * res.getPrice() + bb) < 1.0)
+					return 1.0;
 				else
 					return (aa * res.getPrice() + bb);
 			}
