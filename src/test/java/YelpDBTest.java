@@ -48,7 +48,7 @@ public class YelpDBTest {
 		dataBase.add(restaurantsParser.makeTable());
 		dataBase.add(reviewsParser.makeTable());
 		dataBase.add(usersParser.makeTable());
-		System.out.println(dataBase.get(1).getName());
+
 		for (Review rev : YelpDB.getReviews(dataBase.get(1).getRecords())) {
 			if (!UserReviewsCount.containsKey(rev.getUser_id())) {
 				UserReviewsCount.put(rev.getUser_id(), 1);
@@ -61,7 +61,6 @@ public class YelpDBTest {
 				withMoreThanOne.add(entry.getKey());
 			}
 		}
-		System.out.println(withMoreThanOne.size());
 
 		ToDoubleBiFunction<MP5Db<Restaurant>, String> func;
 		
