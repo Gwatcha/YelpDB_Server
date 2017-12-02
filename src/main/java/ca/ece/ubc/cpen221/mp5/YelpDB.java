@@ -36,6 +36,24 @@ public class YelpDB implements MP5Db<Restaurant> {
         return null;
     }
 
+	/**
+	 * Returns a reference to the one of the tables in the database.
+	 * 
+	 * @param fileName
+	 * 				is the name of one of the Tables in the database.
+	 * @return
+	 * 			a reference to the Table in database.
+	 * @throws IllegalArgumentException
+	 * 				if no such table that has the same name as the fileName exists.
+	 */
+	public Table getTableOf(String fileName) {
+		for(Table t: dataBase) {
+			if(t.getName().equals(fileName))
+				return t;
+		}
+		throw new IllegalArgumentException("No Such Table in the database");
+		
+	}
 	// ~~~~~~~~~~~~Interface methods~~~~~~~~~~~~~~~ \\
 
 	@Override
@@ -465,7 +483,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the Restaurant class
 	 * @return List of Restaurant objects.
 	 */
-	private List<Restaurant> getRestaurants(List<Record> records) {
+	public static List<Restaurant> getRestaurants(List<Record> records) {
 		List<Restaurant> list = new LinkedList<Restaurant>();
 		Restaurant res;
 		// Get indexes
@@ -539,7 +557,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the User class
 	 * @return List of User objects.
 	 */
-	private List<User> getUsers(List<Record> records) {
+	public static List<User> getUsers(List<Record> records) {
 		List<User> list = new LinkedList<User>();
 		User user;
 		// Get indexes
