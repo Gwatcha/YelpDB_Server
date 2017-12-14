@@ -9,6 +9,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 import com.google.gson.Gson;
 
 import RecordClasses.Restaurant;
@@ -102,8 +109,18 @@ public class ConnectionHandler implements Runnable {
                     details += arr[i];
                 }
             }
-		} else
-			return "ERR: ILLEGAL_REQUEST";
+		} else {
+			
+			try {
+				return handleStructuredQueries(request);
+			} catch (Exception e) {
+				
+				return "ERR: INVALID_QUERY";
+				
+			}
+			
+			
+		}
 
 		switch (command) {
 		case "GETRESTAURANT": {
@@ -248,7 +265,7 @@ public class ConnectionHandler implements Runnable {
 			return response;
 		}
 		default:
-			throw new IllegalArgumentException();
+			return "ERR: ILLEGAL_REQUEST";
 		}
 	}
 	
@@ -293,8 +310,23 @@ public class ConnectionHandler implements Runnable {
 
         return record;
     }
+    
+    
+    private String handleStructuredQueries(String line) {
+    	
+    	CharStream stream = new ANTLRInputStream(line);
+    	StructuredQueriesLexer lexer = new StructuredQueriesLexer(stream);
+    	TokenStream tokens = new CommonTokenStream(lexer);
+    	StructuredQueriesParser parser = new StructuredQueriesParser(tokens);
+    	ParseTree tree = parser.root();
+    	ParseTreeWalker walker = new ParseTreeWalker();
+    	StructuredQueriesListener listener = new StructuredQueriesDoer(database);
+    	walker.walk(listener, tree);
+  
+    	return ((StructuredQueriesDoer) listener).toString();
+    }
 	
-    private String converStringArray(String[] arr) {
+    public static String converStringArray(String[] arr) {
     	String s = "";
     	for(int i = 0; i < arr.length; i++) {
     		s += "\"";

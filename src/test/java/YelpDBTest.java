@@ -12,7 +12,7 @@ public class YelpDBTest {
     String reviewsFile = "data/reviews.json";
     String usersFile = "data/users.json";
     YelpDB yelp = new YelpDB(restaurantsFile,  reviewsFile,  usersFile);
-    String query = yelp.kMeansClusters_json(4);
+    String query = yelp.kMeansClusters_json(15);
     System.out.println(query);
     
 	}
