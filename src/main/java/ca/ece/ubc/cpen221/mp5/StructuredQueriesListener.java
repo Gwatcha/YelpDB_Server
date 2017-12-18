@@ -9,26 +9,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface StructuredQueriesListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link StructuredQueriesParser#root}.
-	 * @param ctx the parse tree
-	 */
-	void enterRoot(StructuredQueriesParser.RootContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link StructuredQueriesParser#root}.
-	 * @param ctx the parse tree
-	 */
-	void exitRoot(StructuredQueriesParser.RootContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link StructuredQueriesParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void enterExpr(StructuredQueriesParser.ExprContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link StructuredQueriesParser#expr}.
-	 * @param ctx the parse tree
-	 */
-	void exitExpr(StructuredQueriesParser.ExprContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link StructuredQueriesParser#orExpr}.
 	 * @param ctx the parse tree
 	 */

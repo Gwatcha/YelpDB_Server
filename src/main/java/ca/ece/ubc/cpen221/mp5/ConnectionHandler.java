@@ -9,12 +9,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.runtime.misc.TestRig;
 
 import com.google.gson.Gson;
 
@@ -102,47 +105,43 @@ public class ConnectionHandler implements Runnable {
 		String[] arr = request.split(" ");
 
 		// Splitting the Request String
-		if (arr.length >= 1) {
+		if (arr.length >= 2) {
 			command = arr[0];
-			if (arr.length >= 2) {
-                for (int i = 1; i < arr.length; i++) {
-                    details += arr[i];
-                }
-            }
+			for (int i = 1; i < arr.length; i++)
+				details += arr[i];
 		} else {
-			
+
 			try {
 				return handleStructuredQueries(request);
 			} catch (Exception e) {
-				
+
 				return "ERR: INVALID_QUERY";
-				
+
 			}
-			
-			
+
 		}
 
 		switch (command) {
 		case "GETRESTAURANT": {
-			
+
 			// Get all the restaurants matching the id.
-            Field<String> idField = new Field<>("business_id", details);
+			Field<String> idField = new Field<>("business_id", details);
 			List<Record> matches = database.getRecordMatches("restaurants", idField);
 
-			//Make sure rep invariant holds. (Id is unique).
-			assert(matches.size() == 1);
+			// Make sure rep invariant holds. (Id is unique).
+			assert (matches.size() == 1);
 
-			//Return json of this restaurant.
+			// Return json of this restaurant.
 			return (matches.get(0).toString());
 		}
 		case "ADDUSER": {
 			String name = "", user_id = "";
-			
-			// Has atleast "{\"name\": \"" and   "\"}"
+
+			// Has atleast "{\"name\": \"" and "\"}"
 			if (details.length() > 12) {
 
 				String str = details.substring(0, 10);
-				
+
 				if (!str.matches("{\"name\": \"")) {
 					return "ERR: INVALID_USER_STRING";
 				}
@@ -173,12 +172,12 @@ public class ConnectionHandler implements Runnable {
 				response = "{\"url\": \"http://www.yelp.com/user_details?userid=" + user_id + "\", "
 						+ "\"votes\": {}, \"review_count\": 0, \"type\": \"user\", \"user_id\": " + "\"" + user_id
 						+ "\", \"name\": \"" + name + "\", \"average_stars\": 0}";
-				
+
 				Record record = parseLine(response, new User().getClass());
-				
+
 				// adding to Database
 				userTable.addRecord(record);
-				
+
 				return response;
 			} else
 				return "ERR: INVALID_USER_STRING";
@@ -186,31 +185,30 @@ public class ConnectionHandler implements Runnable {
 		}
 		case "ADDRESTAURANT": {
 			List<Record> restaurantRecord = new LinkedList<Record>();
-			
+
 			Record record = parseLine(details, new Restaurant().getClass());
 			restaurantRecord.add(record);
 			List<Restaurant> restaurant = YelpDB.getRestaurants(restaurantRecord);
-			if(restaurant.size() == 0)
+			if (restaurant.size() == 0)
 				return "ERR: INVALID_RESTAURANT_STRING";
 			Restaurant resta = null;
-			
-			for(Restaurant res : restaurant) {
+
+			for (Restaurant res : restaurant) {
 				resta = res;
 				break;
 			}
-			
+
 			// Checks if the details is a valid JSON line for ADDRESTAURANT
-			for(Method method : resta.getClass().getDeclaredMethods()) {
-				if (method.getName().startsWith("get") && (!method.getName().equals("getStars")
-						|| !method.getName().equals("getBusiness_id"))) {
+			for (Method method : resta.getClass().getDeclaredMethods()) {
+				if (method.getName().startsWith("get")
+						&& (!method.getName().equals("getStars") || !method.getName().equals("getBusiness_id"))) {
 					String str = (String) method.invoke(resta);
-					if(str.isEmpty()) {
+					if (str.isEmpty()) {
 						return "ERR: INVALID_RESTAURANT_STRING";
-					}	
+					}
 				}
 			}
-			
-			
+
 			Table restaurantTable = database.getTableOf("restaurants");
 			List<Restaurant> restaurants = YelpDB.getRestaurants(restaurantTable.getRecords());
 			boolean isUnique = true;
@@ -227,35 +225,31 @@ public class ConnectionHandler implements Runnable {
 				}
 				isUnique = isNotUnique;
 			}
-			
-			
+
 			resta.setBusiness_id(business_id);
 			resta.setStars(0.0);
 			String neighbourhoods = converStringArray(resta.getNeighborhoods());
 			String categories = converStringArray(resta.getCategories());
 			String schools = converStringArray(resta.getSchools());
-			
-			response = "{\"open\": " + resta.getOpen()  + ", \"url\": \"" + resta.getUrl() + "\", "
-					+ "\"longitude\": "+ resta.getLongitude() + ", \"neighborhoods\": "
-					+ "[" + neighbourhoods + "], \"business_id\": "
-					+ "\"" + resta.getBusiness_id() + "\", \"name\": \""+ resta.getName() + "\", "
-					+ "\"categories\": [" + categories + "], \"state\": \""+ resta.getState() + "\", "
-					+ "\"type\": \""+ resta.getType() +"\", \"stars\": "+ resta.getStars() + ", \"city\": \""
-					+ resta.getCity() +"\", \"full_address\": \""+ resta.getFull_address() +"\", "
-					+ "\"review_count\": " + resta.getReview_count() + ", " + "\"photo_url\": \""+ resta.getPhoto_url() +"\", "
-					+ "\"schools\": ["+ schools  +"], \"latitude\": "+ resta.getLatitude() 
-					+", \"price\": " + resta.getPrice() + "}";
-			
+
+			response = "{\"open\": " + resta.getOpen() + ", \"url\": \"" + resta.getUrl() + "\", " + "\"longitude\": "
+					+ resta.getLongitude() + ", \"neighborhoods\": " + "[" + neighbourhoods + "], \"business_id\": "
+					+ "\"" + resta.getBusiness_id() + "\", \"name\": \"" + resta.getName() + "\", "
+					+ "\"categories\": [" + categories + "], \"state\": \"" + resta.getState() + "\", " + "\"type\": \""
+					+ resta.getType() + "\", \"stars\": " + resta.getStars() + ", \"city\": \"" + resta.getCity()
+					+ "\", \"full_address\": \"" + resta.getFull_address() + "\", " + "\"review_count\": "
+					+ resta.getReview_count() + ", " + "\"photo_url\": \"" + resta.getPhoto_url() + "\", "
+					+ "\"schools\": [" + schools + "], \"latitude\": " + resta.getLatitude() + ", \"price\": "
+					+ resta.getPrice() + "}";
+
 			record = parseLine(response, new Restaurant().getClass());
-			// Updating restaurantTable 
+			// Updating restaurantTable
 			restaurantTable.addRecord(record);
-			
+
 			return response;
 
 		}
 		case "ADDREVIEW": {
-
-
 
 			return response;
 
@@ -268,76 +262,96 @@ public class ConnectionHandler implements Runnable {
 			return "ERR: ILLEGAL_REQUEST";
 		}
 	}
+
+	/**
+	 * Method parseLine, which takes a line of json following the form of a row
+	 * defined by this instances definingClass. Returns a record representation of
+	 * the row with no guarantee on order.
+	 *
+	 * @param jsonRow
+	 *            is a String for a row of json that fits the definedClass of this
+	 *            instance. eg. String: {"emp_id": 1017, "address": {"street":"MG
+	 *            Road","city":"Bangalore"}} Now in RecordClasses.. Employee {int
+	 *            emp_id; Address address; //+Standard Getters and Setters} Address
+	 *            {String street; String city; //+Standard Getters and Setters}
+	 * @return A record with the type defined by this objects table type (which is
+	 *         set during object construction).
+	 * @throws Exception,
+	 *             thrown if the jsonLine passed does not match the type defined by
+	 *             the definingClass.
+	 */
+	private Record parseLine(String jsonRow, Class definingClass) throws Exception {
+		// The record to return
+		Record record = new Record(definingClass.getSimpleName().toLowerCase());
+
+		// Parse the line and store into a new object of type defined in the
+		// constructor.
+		Gson gson = new Gson();
+
+		// This line parses the row and populates the 'output' Objects properties
+		// According to the values of fields in this jsonRow.
+		// The output object is of type 'definingClass', which has to have
+		// The same property names and types as the fields in the jsonRow string,
+		// As well as respective getter and setter methods for each one.
+		Object output = gson.fromJson(jsonRow, definingClass);
+		// Throws exception if the jsonRow being parsed does not fit the class.
+
+		for (Method method : definingClass.getDeclaredMethods()) {
+			// Only use getter methods.
+			if (method.getName().startsWith("get")) {
+				// Use this getter that is assumed to be labeled "get[parameterName]" to create
+				// a field.
+				Field field = new Field<>(method.getName().substring(3).toLowerCase(), method.invoke(output));
+				record.addField(field);
+			}
+		}
+
+		return record;
+	}
 	
-    /**
-     * Method parseLine, which takes a line of json following
-     * the form of a row defined by this instances definingClass.
-     * Returns a record representation of the row with no guarantee on order.
-     *
-     * @param jsonRow is a String for a row of json that fits the definedClass of this instance.
-     *                eg.    String: {"emp_id": 1017, "address": {"street":"MG Road","city":"Bangalore"}}
-     *                Now in RecordClasses..
-     *                Employee {int emp_id; Address address; //+Standard Getters and Setters}
-     *                Address {String street; String city; //+Standard Getters and Setters}
-     * @return A record with the type defined by this objects table type
-     * (which is set during object construction).
-     * @throws Exception, thrown if the jsonLine passed does not match the type
-     *                    defined by the definingClass.
-     */
-    private Record parseLine(String jsonRow, Class definingClass) throws Exception {
-        //The record to return
-        Record record = new Record(definingClass.getSimpleName().toLowerCase());
+	private String handleStructuredQueries(String line) {
 
-        //Parse the line and store into a new object of type defined in the constructor.
-        Gson gson = new Gson();
+		CharStream stream = new ANTLRInputStream(line);
+		StructuredQueriesLexer lexer = new StructuredQueriesLexer(stream);
+		TokenStream tokens = new CommonTokenStream(lexer);
+		StructuredQueriesParser parser = new StructuredQueriesParser(tokens);
+		ParseTree tree = parser.andExpr();
+		ParseTreeWalker walker = new ParseTreeWalker();
+		StructuredQueriesListener listener = new StructuredQueriesDoer(database);
+		Trees.inspect(tree, parser);
+		walker.walk(listener, tree);
+		
+		return ((StructuredQueriesDoer) listener).toString();
+	}
 
-        //This line parses the row and populates the 'output' Objects properties
-        //According to the values of fields in this jsonRow.
-        //The output object is of type 'definingClass', which has to have
-        //The same property names and types as the fields in the jsonRow string,
-        //As well as respective getter and setter methods for each one.
-        Object output = gson.fromJson(jsonRow, definingClass);
-        //Throws exception if the jsonRow being parsed does not fit the class.
+	// This one is for testing purposes... comment out when not needed...
+	public static String handleStructuredQueries(String line, YelpDB data) {
 
-        for (Method method : definingClass.getDeclaredMethods()) {
-            //Only use getter methods.
-            if (method.getName().startsWith("get")) {
-                //Use this getter that is assumed to be labeled "get[parameterName]" to create a field.
-                Field field = new Field<>(method.getName().substring(3).toLowerCase(), method.invoke(output));
-                record.addField(field);
-            }
-        }
+		CharStream stream = new ANTLRInputStream(line);
+		StructuredQueriesLexer lexer = new StructuredQueriesLexer(stream);
+		TokenStream tokens = new CommonTokenStream(lexer);
+		StructuredQueriesParser parser = new StructuredQueriesParser(tokens);
+		ParseTree tree = parser.andExpr();
+		ParseTreeWalker walker = new ParseTreeWalker();
+		StructuredQueriesListener listener = new StructuredQueriesDoer(data);
+		Trees.inspect(tree, parser);
+		walker.walk(listener, tree);
 
-        return record;
-    }
-    
-    
-    private String handleStructuredQueries(String line) {
-    	
-    	CharStream stream = new ANTLRInputStream(line);
-    	StructuredQueriesLexer lexer = new StructuredQueriesLexer(stream);
-    	TokenStream tokens = new CommonTokenStream(lexer);
-    	StructuredQueriesParser parser = new StructuredQueriesParser(tokens);
-    	ParseTree tree = parser.root();
-    	ParseTreeWalker walker = new ParseTreeWalker();
-    	StructuredQueriesListener listener = new StructuredQueriesDoer(database);
-    	walker.walk(listener, tree);
-  
-    	return ((StructuredQueriesDoer) listener).toString();
-    }
-	
-    public static String converStringArray(String[] arr) {
-    	String s = "";
-    	for(int i = 0; i < arr.length; i++) {
-    		s += "\"";
-    		s += arr[i];
-    		s += "\"";
-    		
-    		if((i+1) < arr.length) {
-    			s += ", ";
-    		}
-    	}
-    	return s;
-    }
-	
+		return ((StructuredQueriesDoer) listener).toString();
+	}
+
+	public static String converStringArray(String[] arr) {
+		String s = "";
+		for (int i = 0; i < arr.length; i++) {
+			s += "\"";
+			s += arr[i];
+			s += "\"";
+
+			if ((i + 1) < arr.length) {
+				s += ", ";
+			}
+		}
+		return s;
+	}
+
 }
