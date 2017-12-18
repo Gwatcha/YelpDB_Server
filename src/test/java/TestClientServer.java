@@ -1,7 +1,11 @@
 import org.junit.Test;
 
-import java.io.IOException;
+import ca.ece.ubc.cpen221.mp5.ConnectionHandler;
+import ca.ece.ubc.cpen221.mp5.YelpDB;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import static org.junit.Assert.*;
 
 public class TestClientServer {
@@ -53,5 +57,21 @@ public class TestClientServer {
             ioe.printStackTrace();
             fail();
         }
+    }
+    
+    @Test
+    public void testStructuredQueries() throws Exception{
+        String restaurantsFile = "data/restaurants.json";
+        String reviewsFile = "data/reviews.json";
+        String usersFile = "data/users.json";
+        YelpDB yelp = new YelpDB(restaurantsFile,  reviewsFile,  usersFile);
+        String command = "in(Telegraph Ave) && price <= 2 && (category(Italian) || category(Chinese)) && name(Sun Hong Kong Restaurant)";
+        try {
+        String str = ConnectionHandler.handleStructuredQueries(command, yelp);
+        System.out.println(str);  
+        } catch(Exception e) {
+        	System.out.println("err");
+        }
+       	
     }
 }
