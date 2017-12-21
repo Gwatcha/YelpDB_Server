@@ -474,7 +474,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the Restaurant class
 	 * @return List of Restaurant objects.
 	 */
-	private List<Review> getReviews(List<Record> records) {
+	public static List<Review> getReviews(List<Record> records) {
 		List<Review> list = new LinkedList<Review>();
 		Review review;
 		// Get indexes

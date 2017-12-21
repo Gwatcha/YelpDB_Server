@@ -70,7 +70,6 @@ public class TestClientServer {
         String str = ConnectionHandler.handleStructuredQueries(command, yelp);
         System.out.println(str);  
         } catch(Exception e) {
-        	System.out.println("err");
         }
        	
     }

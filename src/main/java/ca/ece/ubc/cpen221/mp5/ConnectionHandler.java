@@ -22,6 +22,8 @@ import org.antlr.v4.runtime.misc.TestRig;
 import com.google.gson.Gson;
 
 import RecordClasses.Restaurant;
+import RecordClasses.Review;
+import RecordClasses.Review.RestaurantVotes;
 import RecordClasses.User;
 
 /**
@@ -232,6 +234,7 @@ public class ConnectionHandler implements Runnable {
 			String categories = converStringArray(resta.getCategories());
 			String schools = converStringArray(resta.getSchools());
 
+			
 			response = "{\"open\": " + resta.getOpen() + ", \"url\": \"" + resta.getUrl() + "\", " + "\"longitude\": "
 					+ resta.getLongitude() + ", \"neighborhoods\": " + "[" + neighbourhoods + "], \"business_id\": "
 					+ "\"" + resta.getBusiness_id() + "\", \"name\": \"" + resta.getName() + "\", "
@@ -250,7 +253,209 @@ public class ConnectionHandler implements Runnable {
 
 		}
 		case "ADDREVIEW": {
+			List<Record> reviewRecord = new LinkedList<Record>();
 
+			// Parses in the review as a record
+			Record record = parseLine(details, new Review().getClass());
+			reviewRecord.add(record);
+			
+			// converts it into a review
+			List<Review> review = YelpDB.getReviews(reviewRecord);
+			
+			// Checks if a review was made.
+			if (review.size() == 0)
+				return "ERR: INVALID_REVIEW_STRING";
+			
+			Review revi = null;
+			
+			// Finally have a pointer to the review that was made.
+			for (Review rev : review) {
+				revi = rev;
+				break;
+			}
+
+			
+			// Checks if the details is a valid JSON line for ADDREVIEW
+			if (revi.getBusiness_id().isEmpty()) {
+				return "ERR: INVALID_RESTAURANT_STRING";
+			}
+			
+			if (revi.getDate().isEmpty()) {
+				return "ERR: INVALID_RESTAURANT_STRING";
+			}
+			
+			if (revi.getStars() > 0 && revi.getStars() <=5) {
+				return "ERR: INVALID_RESTAURANT_STRING";
+			}
+			
+			if (revi.getUser_id().isEmpty()) {
+				return "ERR: INVALID_RESTAURANT_STRING";
+			}
+			
+			if (revi.getText() == null) {
+				revi.setText("");
+			}
+			
+			// Checking if the user exists
+			Table userTable = database.getTableOf("users");
+			List<User> users = YelpDB.getUsers(userTable.getRecords());
+			String ids = revi.getUser_id();
+			int user_id_index = -1;
+			
+			for(int i = 0; i < users.size(); i++) {
+				if(users.get(i).getUser_id().equals(ids)) {
+					user_id_index = i;
+					break;
+				}
+			}
+			
+			if(user_id_index == -1)
+				return "ERR: NO_SUCH_USER";
+			
+			// checking if the restaurant exists
+			Table restaurantTable = database.getTableOf("restaurants");
+			List<Restaurant> restaurants = YelpDB.getRestaurants(restaurantTable.getRecords());
+			
+			ids = revi.getBusiness_id();
+			int business_id_index = -1;
+			
+			for(int i = 0; i < restaurants.size(); i++) {
+				if(restaurants.get(i).getBusiness_id().equals(ids)) {
+					business_id_index = i;
+					break;
+				}
+			}
+			
+			if(business_id_index == -1)
+				return "ERR: NO_SUCH_RESTAURANT";
+			
+			// Updating user 
+			int count = users.get(user_id_index).getReview_count();
+			double stars = users.get(user_id_index).getAverage_stars();
+			
+			stars = ((stars * count) + revi.getStars()) / (count + 1);
+			count++;
+			
+			users.get(user_id_index).setAverage_stars(stars);
+			users.get(user_id_index).setReview_count(count);
+			
+			List<Record> table = userTable.getRecords();
+			
+			int review_count_index = -1;
+			int average_stars_index = -1;
+			user_id_index = -1;
+			for(int i = 0; i < table.get(0).getSize(); i++) {
+				
+				if(table.get(0).getFieldAt(i).getTypeName().equals("user_id")) {
+					user_id_index = i;
+				}
+				
+				if(table.get(0).getFieldAt(i).getTypeName().equals("review_count")) {
+					review_count_index = i;
+				}
+				
+				if(table.get(0).getFieldAt(i).getTypeName().equals("average_stars")) {
+					average_stars_index = i;
+				}
+				
+				if(average_stars_index != -1 && review_count_index != -1 && user_id_index != -1) {
+					break;
+				}
+			}
+			
+			
+			// Actually updating the database for users
+			for(int i = 0; i < table.size(); i++) {
+				if(((String) table.get(i).getFieldAt(user_id_index).getValue()).equals(revi.getUser_id())) {
+					table.get(i).addField(new Field<Integer>("review_count", count));
+					table.get(i).addField(new Field<Double>("average_stars", stars));
+					break;
+				}
+			}
+			
+			// Updating restaurant
+			count = restaurants.get(business_id_index).getReview_count();
+			stars = restaurants.get(business_id_index).getStars();
+			
+			stars = ((stars * count) + revi.getStars()) / (count + 1);
+			count++;
+			
+			restaurants.get(business_id_index).setStars(stars);
+			restaurants.get(business_id_index).setReview_count(count);
+			
+			table = restaurantTable.getRecords();
+			
+			review_count_index = -1;
+			average_stars_index = -1;
+			business_id_index = -1;
+			for(int i = 0; i < table.get(0).getSize(); i++) {
+				
+				if(table.get(0).getFieldAt(i).getTypeName().equals("business_id")) {
+					business_id_index = i;
+				}
+				
+				if(table.get(0).getFieldAt(i).getTypeName().equals("review_count")) {
+					review_count_index = i;
+				}
+				
+				if(table.get(0).getFieldAt(i).getTypeName().equals("stars")) {
+					average_stars_index = i;
+				}
+				
+				if(average_stars_index != -1 && review_count_index != -1 && user_id_index != -1) {
+					break;
+				}
+			}
+			
+			
+			// Actually updating the database for restaurants
+			for(int i = 0; i < table.size(); i++) {
+				if(((String) table.get(i).getFieldAt(business_id_index).getValue()).equals(revi.getBusiness_id())) {
+					table.get(i).addField(new Field<Integer>("review_count", count));
+					table.get(i).addField(new Field<Double>("stars", stars));
+					break;
+				}
+			}
+			
+			// Generating a unique review_id
+			Table reviewTable = database.getTableOf("reviews");
+			List<Review> reviews = YelpDB.getReviews(reviewTable.getRecords());
+			boolean isUnique = true;
+			String review_id = "";
+			while (isUnique) {
+				boolean isNotUnique = false;
+
+				UUID id = UUID.randomUUID();
+				review_id = id.toString().substring(0, 22);
+
+				for (Review rev : reviews) {
+					if (rev.getReview_id().equals(review_id))
+						isNotUnique = true;
+				}
+				isUnique = isNotUnique;
+			}
+			
+			revi.setReview_id(review_id);
+			
+			// precaution
+			revi.setType("review");
+			
+			revi.getVotes().setCool(0);
+			revi.getVotes().setFunny(0);
+			revi.getVotes().setUseful(0);
+			
+			
+			response = "{\"type\": \"review\", \"business_id\": \""+ revi.getBusiness_id()  +"\", "
+					+ "\"votes\": {\"cool\": 0, \"useful\": 0, \"funny\": 0}, \"review_id\": "
+					+ "\""+ revi.getReview_id() + "\", \"text\": \"" + revi.getText() + "\", "
+					+ "\"stars\": "+ revi.getStars() + ", \"user_id\": \"" + revi.getUser_id() + "\", "
+					+ "\"date\": \""+  revi.getDate()  + "\"}";
+			
+			// parsing the final version of the record
+			record = parseLine(response, new Review().getClass());
+			// Updating reviewTable
+			reviewTable.addRecord(record);
+			
 			return response;
 
 		}

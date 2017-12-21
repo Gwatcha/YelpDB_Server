@@ -23,6 +23,7 @@ public class StructuredQueriesDoer extends StructuredQueriesBaseListener {
 		forExitOrExpr.clear();
 	}
 	
+	// Doing all the Child nodes and combining all the sets of restaurants.
 	@Override
 	public void enterOrExpr(OrExprContext ctx) {
 		Set<Restaurant> main = new HashSet<Restaurant>(restaurants);
@@ -50,12 +51,7 @@ public class StructuredQueriesDoer extends StructuredQueriesBaseListener {
 
 	}
 
-	public void exitAndExpr(AndExprContext ctx) {
-//		for (AtomContext cxt : ctx.atom()) {
-//			exitAtom(cxt);
-//		}
-	}
-
+	// Atom functions, basic operations
 	public void exitAtom(AtomContext ctx) {
 		if (ctx.in() != null) {
 
