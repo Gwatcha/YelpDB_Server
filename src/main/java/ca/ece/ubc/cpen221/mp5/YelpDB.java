@@ -6,14 +6,18 @@ import java.util.*;
 import java.util.function.ToDoubleBiFunction;
 import RecordClasses.*;
 import RecordClasses.Review.RestaurantVotes;
-// import RecordClasses.User.UserVotes; // Comment out if using the getUsers method
+import RecordClasses.User.UserVotes;
+
 
 public class YelpDB implements MP5Db<Restaurant> {
 
 	List<Table> dataBase;
+    //An ordered list of table names
+    private List<String> order;
 
 	public YelpDB(String restaurantsFile, String reviewsFile, String usersFile) throws FileNotFoundException {
 		dataBase = Collections.synchronizedList(new ArrayList<Table>());
+		order = Collections.synchronizedList(new ArrayList<String>());
 
 		// Initialize parsers.
 		ParseJsonFile restaurantsParser = new ParseJsonFile(restaurantsFile, Restaurant.class);
@@ -24,7 +28,47 @@ public class YelpDB implements MP5Db<Restaurant> {
 		dataBase.add(restaurantsParser.makeTable());
 		dataBase.add(reviewsParser.makeTable());
 		dataBase.add(usersParser.makeTable());
+
+        order.add("restaurants");
+        order.add("reviews");
+        order.add("users");
 	}
+
+
+    /**
+     * Returns a list of Records which contain a field equal to the
+     * one specified.
+     *
+     * @param tableName, the table to search through, usually the name of the record + "s"
+     * @param field,     the field to match records to
+     * @return a list of records that contain a field equal to 'field', empty if no matches.
+     */
+    public List<Record> getRecordMatches(String tableName, Field<?> field) {
+        List<Record> matchedRecords = new ArrayList<>();
+        //Num of this table in database, -1 if invalid table.
+        int tableNum = order.indexOf(tableName.toLowerCase());
+        if (tableNum == - 1 || dataBase.isEmpty()) {
+            return matchedRecords;
+        }
+
+        Table tableToSearch = dataBase.get(tableNum);
+
+        //If this field does not exist in the records of this table,
+        //then return the empty list. Trust that table is synchronized.
+        int indexOfTargetField = tableToSearch.indexOfField(field);
+        if (indexOfTargetField == -1) {
+            return matchedRecords; //empty
+        }
+
+        List<Record> recordsToSearch = tableToSearch.getRecords();
+        //Search through this tables records to find matches.
+        for (Record record : recordsToSearch) {
+            if (record.getFieldAt(indexOfTargetField).equals(field)) {
+                matchedRecords.add(record);
+            }
+        }
+        return matchedRecords;
+    }
 
 	// ~~~~~~~~~~~~Interface methods~~~~~~~~~~~~~~~ \\
 
@@ -245,6 +289,31 @@ public class YelpDB implements MP5Db<Restaurant> {
 	// ~~~~~~~~~~~~ Helper Methods ~~~~~~~~~~~~ \\
 
 	/**
+<<<<<<< HEAD
+=======
+	 *  Helper method for kMeansClusters_json
+	 * Returns a reference to the one of the tables in the database.
+	 * 
+	 * @param fileName
+	 * 				is the name of one of the Tables in the database.
+	 * @return
+	 * 			a reference to the Table in database.
+	 * @throws IllegalArgumentException
+	 * 				if no such table that has the same name as the fileName exists.
+	 */
+	public Table getTableOf(String fileName) {
+		for(Table t: dataBase) {
+			if(t.getName().equals(fileName))
+				return t;
+		}
+		throw new IllegalArgumentException("No Such Table in the database");
+		
+	}
+	
+	
+	
+	/**
+>>>>>>> StructuredQueriesUsingAntlr
 	 * Helper method for kMeansClusters_json
 	 * 
 	 * @param k
@@ -462,7 +531,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the Restaurant class
 	 * @return List of Restaurant objects.
 	 */
-	private List<Restaurant> getRestaurants(List<Record> records) {
+	public static List<Restaurant> getRestaurants(List<Record> records) {
 		List<Restaurant> list = new LinkedList<Restaurant>();
 		Restaurant res;
 		// Get indexes
@@ -536,8 +605,9 @@ public class YelpDB implements MP5Db<Restaurant> {
 	 *            List of JSON lines, that represent the User class
 	 * @return List of User objects.
 	 */
-	/*// Comment out If needed
-	private List<User> getUsers(List<Record> records) {
+
+
+	public static List<User> getUsers(List<Record> records) {
 		List<User> list = new LinkedList<User>();
 		User user;
 		// Get indexes
@@ -573,7 +643,7 @@ public class YelpDB implements MP5Db<Restaurant> {
 
 		return new LinkedList<User>(list);
 	}
-*/
+
 	// Helper method to do the pythagorean theorem
 	private double distanceBetweenRestaurants(Double x1, Double y1, Double x2, Double y2) {
 		double newX = x1 - x2;

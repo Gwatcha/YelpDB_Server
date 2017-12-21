@@ -1,13 +1,13 @@
 package RecordClasses;
 
 public class User {
-    String url;
-    UserVotes votes;
-    Integer review_count;
-    String type;
-    String user_id;
-    String name;
-    Double average_stars;
+	private String url;
+	private UserVotes votes;
+	private Integer review_count;
+	private String type;
+	private String user_id;
+	private String name;
+	private Double average_stars;
 
     public String getUrl() {
         return url;
@@ -92,6 +92,17 @@ public class User {
 
         public void setCool(Integer cool) {
             this.cool = cool;
+        }
+
+        @Override
+        public String toString() {
+            if (funny != null && useful != null && cool != null) {
+                return ("{"+ "\"funny:\": " + funny + ", \"useful\": " + useful +  ", "
+                        + "\"cool\": " + cool + "}");
+            }
+            else {
+                return null;
+            }
         }
     }
 }

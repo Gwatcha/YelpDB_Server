@@ -25,7 +25,7 @@ public class Table {
 	 */
 	public Table(String name) {
 		this.name = name;
-		this.table =Collections.synchronizedList((new ArrayList<Record>()));
+		this.table = Collections.synchronizedList((new ArrayList<Record>()));
 	}
 
 	/**
@@ -37,17 +37,16 @@ public class Table {
 	 * 		  is either empty or not of the same type of records already in this table.
 	 */
 	public Boolean addRecord(Record record) {
-		if (table.isEmpty() && record.getSize() != 0) {
-			table.add(record);
-			return true;
-		}
+            if (table.isEmpty() && record.getSize() != 0) {
+                table.add(record);
+                return true;
+            }
 
-		// The first record added defines the type, so compare it to that one.
-		else if (record.sameTypeAs(table.get(0))) {
-			table.add(record);
-			return true;
-		}
-
+            // The first record added defines the type, so compare it to that one.
+            else if (record.sameTypeAs(table.get(0))) {
+                table.add(record);
+                return true;
+            }
 		return false;
 	}
 
@@ -61,33 +60,59 @@ public class Table {
 	 * @return
 	 */
 	public int getSize() {
-		return table.size();
+            return table.size();
 	}
 
 	/**
 	 * Returns all the records in this table
 	 * @return 
-	 * 			a list of all the records in this table
+	 * 			a list of all the records in this table,
+     * 		    this is not a copy of the records so changes to the list
+     * 		    wil reflect in the records of this table.
 	 */
-	public ArrayList<Record> getRecords() {
-		return new ArrayList<Record>(table);
+	public List<Record> getRecords() {
+		return table;
 	}
-	
+
+    /**Since all records contain the same order of fields in a table,
+     * return the index in every record associated with a field of this type.
+     * If this field does not exist, then return -1.
+     * @param exampleField
+     * @return the index of the example field in records in this table.
+     */
+	public int indexOfField(Field<?> exampleField) {
+	    if (table.size() > 0) {
+	        //First record.
+	        Record firstRec = table.get(0);
+            int size = firstRec.getSize();
+
+            synchronized (firstRec) {
+                for (int i = 0; i < size; i++) {
+                    if (firstRec.getFieldAt(i).sameTypeAs(exampleField)) {
+                        return i;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
 	/**
 	 * Returns unique hashcode for this table.
 	 */
 	@Override
 	public int hashCode() {
-		return this.toString().hashCode();
+		return name.hashCode();
 	}
 
 	@Override
 	public String toString() {
 		String id = "";
 
-		for (Record record : table) {
-			id = new String(id + "\n" + record.toString());
-		}
+		synchronized (table) {
+            for (Record record : table) {
+                id = new String(id + "\n" + record.toString());
+            }
+        }
 
 		return (id);
 	}

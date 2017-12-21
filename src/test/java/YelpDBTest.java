@@ -1,10 +1,9 @@
 import RecordClasses.*;
+
 import ca.ece.ubc.cpen221.mp5.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
-import java.io.FileNotFoundException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -13,6 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.ToDoubleBiFunction;
+
+import ca.ece.ubc.cpen221.mp5.YelpDB;
+
 
 import org.junit.Test;
 
@@ -78,8 +80,8 @@ public class YelpDBTest {
 			fail();
 		} catch (Exception e) {
 		}
-
 	}
+
 	
 	// Testing the split cluster functionality
 	@Test
